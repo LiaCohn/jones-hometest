@@ -15,3 +15,7 @@ Automates filling a contact form at https://test.netlify.app/ and verifies reach
 ```bash
 node index.js
 ```
+
+## Task 2 - UI Analysis
+
+See `ui-analysis.txt` for the full analysis of the Account Information form, including bugs found, test cases, and suggested fix for the most severe issue.
