@@ -1,4 +1,14 @@
 const { chromium } = require('playwright');
+const { z } = require('zod');
+
+const detailsSchema = z.object({
+    name: z.string().min(2),
+    email: z.string().email(),
+    phone: z.string().min(7),
+    company: z.string().min(2),
+    website: z.string().url(),
+    employees: z.string().min(1)
+});
 
 const details = {
     name: 'John Doe',
@@ -13,11 +23,7 @@ const fillForm = async (details) => {
     let browser;
 
     try {
-        const { name, email, phone, company, website, employees } = details;
-
-        if(!name || !email || !phone || !company || !website || !employees) {
-            throw new Error('All fields are required');
-        }
+        const { name, email, phone, company, website, employees } = detailsSchema.parse(details);
 
         const url = 'https://test.netlify.app/';
         const thankYouUrl = `${url}thank-you.html**`;
