@@ -1,0 +1,50 @@
+Account Information Form - UI Analysis
+
+
+a. Problems found
+
+Security:
+- The card number field is not masked ,anyone nearby can see it.
+- There is no CVV field. 
+- The payment amount (30.00) is hardcoded on the client side.
+
+Usability:
+- The "MI" field has no explanation. Non-US users won't know what it means.
+- There are two address fields but the second one has no label. It's not clear what it's for.
+- No currency symbol or indication next to the payment amount. 
+- "State or Province" is a dropdown, which seems to be US/Canada focused. If this form is international, many countries don't have states at all (e.g. Israel). Users from those countries have no valid option to select.
+- The expiration date uses two separate dropdowns (month and year). It seems possible to select a month without selecting a year and vice versa, which should not be allowed.
+- It is unclear whether expired dates are blocked in the dropdowns (needs testing).
+
+
+b. Test cases
+
+Test 1 - Happy path:
+Fill all fields with valid data and click Continue.
+Expected: form submits and moves to the next step.
+
+Test 2 - Missing required field:
+Leave the Card Number field empty, fill everything else, click Continue.
+Expected: form does not submit and shows an error on the empty field.
+
+Test 3 - Invalid card number:
+Enter an invalid value like "abcd" or "1234" in the Card Number field, click Continue.
+Expected: validation error is shown and form does not submit.
+
+Test 4 - Partial expiration date (month only):
+Select a month but leave the year as "Select year", click Continue.
+Expected: validation error, form does not submit.
+
+Test 5 - Expired card date:
+Select a month and year that are already in the past, click Continue.
+Expected: validation error saying the card is expired, form does not submit.
+
+
+c. Most severe bug and suggested fix
+
+The missing CVV field is the most severe issue. CVV exists specifically to verify that the person submitting the form physically has the card. 
+Without it, anyone with a stolen card number can complete the form.
+Fix: 
+Add a CVV input next to the expiration date. It should be masked (like a password field), 
+limited to 3-4 digits depending on the card type (Visa/Mastercard/Discover use 3 digits, Amex uses 4). 
+The CVV field length should update automatically based on the selected card type.

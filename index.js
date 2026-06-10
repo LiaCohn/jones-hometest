@@ -1,0 +1,55 @@
+const { chromium } = require('playwright');
+
+const details = {
+    name: 'John Doe',
+    email: 'john@example.com',
+    phone: '0501234567',
+    company: 'Jones Ltd',
+    website: 'https://jones.com',
+    employees: '51-500'
+}
+
+const fillForm = async (details) => {
+    let browser;
+
+    try {
+        const { name, email, phone, company, website, employees } = details;
+
+        if(!name || !email || !phone || !company || !website || !employees) {
+            throw new Error('All fields are required');
+        }
+
+        const url = 'https://test.netlify.app/';
+        const thankYouUrl = `${url}thank-you.html**`;
+        //launch browser
+        browser = await chromium.launch({ headless: false });
+        const context = await browser.newContext();
+        const page = await context.newPage();
+
+        //goto the form
+        await page.goto(url);
+
+        //fill form
+        await page.locator('#name').fill(name);
+        await page.locator('#email').fill(email);
+        await page.locator('#phone').fill(phone);
+        await page.locator('#company').fill(company);
+        await page.locator('#website').fill(website);
+        await page.locator('#employees').selectOption(employees);
+
+        //take screenshot before submitting
+        await page.screenshot({ path: 'before-submit.png' });
+
+        await page.locator('text=Request a call back').click();  // click
+        await page.waitForURL(thankYouUrl);   
+        console.log('Reached the thank you page!');
+
+
+    } catch (error) {
+        console.error('Error:', error);
+    } finally {
+        await browser?.close();
+    }
+};
+
+fillForm(details);
