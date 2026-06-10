@@ -7,7 +7,7 @@ Automates filling a contact form at https://test.netlify.app/ and verifies reach
 ### Requirements
 
 - Node.js
-- Playwright (`npm install`)
+- Playwright + Zod (`npm install`)
 - Chromium (`npx playwright install chromium`)
 
 ### Run

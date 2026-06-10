@@ -2,12 +2,14 @@ const { chromium } = require('playwright');
 const { z } = require('zod');
 
 const detailsSchema = z.object({
-    name: z.string().min(2),
-    email: z.string().email(),
-    phone: z.string().min(7),
-    company: z.string().min(2),
-    website: z.string().url(),
-    employees: z.string().min(1)
+    name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
+    email: z.email({ message: 'Must be a valid email address' }),
+    phone: z.string()
+        .min(7, { message: 'Must be a valid phone number' })
+        .max(15, { message: 'Must be a valid phone number' }),
+    company: z.string().min(2, { message: 'Company must be at least 2 characters' }),
+    website: z.url({ message: 'Must be a valid URL including http:// or https://' }),
+    employees: z.string().min(1, { message: 'Employees field is required' })
 });
 
 const details = {
@@ -52,7 +54,12 @@ const fillForm = async (details) => {
 
 
     } catch (error) {
-        console.error('Error:', error);
+        //zod error
+        if (error instanceof z.ZodError) {
+            error.issues.forEach(e => console.error(`Validation error - ${e.path[0]}: ${e.message}`));
+        } else { //other errors
+            console.error('Error:', error.message);
+        }
     } finally {
         await browser?.close();
     }
