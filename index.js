@@ -7,9 +7,6 @@ const detailsSchema = z.object({
     phone: z.string()
         .min(7, { message: 'Must be a valid phone number' })
         .max(15, { message: 'Must be a valid phone number' }),
-    company: z.string().min(2, { message: 'Company must be at least 2 characters' }),
-    website: z.url({ message: 'Must be a valid URL including http:// or https://' }),
-    employees: z.string().min(1, { message: 'Employees field is required' })
 });
 
 const details = {
@@ -25,7 +22,8 @@ const fillForm = async (details) => {
     let browser;
 
     try {
-        const { name, email, phone, company, website, employees } = detailsSchema.parse(details);
+        const { name, email, phone } = detailsSchema.parse(details);
+        const { company, website, employees } = details;
 
         const url = 'https://test.netlify.app/';
         const thankYouUrl = `${url}thank-you.html**`;
