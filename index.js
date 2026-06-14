@@ -39,14 +39,15 @@ const fillForm = async (details) => {
         await page.locator('#name').fill(name);
         await page.locator('#email').fill(email);
         await page.locator('#phone').fill(phone);
-        await page.locator('#company').fill(company);
-        await page.locator('#website').fill(website);
-        await page.locator('#employees').selectOption(employees);
+        // fill optional fields only if provided
+        if (company) await page.locator('#company').fill(company);
+        if (website) await page.locator('#website').fill(website);
+        if (employees) await page.locator('#employees').selectOption(employees);
 
         //take screenshot before submitting
         await page.screenshot({ path: 'before-submit.png' });
 
-        await page.locator('text=Request a call back').click();  // click
+        await page.locator('text=Request a call back').click(); 
         await page.waitForURL(thankYouUrl);   
         console.log('Reached the thank you page!');
 
